@@ -4,7 +4,7 @@ Essentially, the Vigenère cipher uses the tabula recta (which can be displayed 
 The compiled executable requires one input file, otherwise it will terminate the program. During the runtime, the user will be prompted for a keyword which is the key to encryption/decryption process; then, the program will create an output file containing the enciphered/deciphered text.
 ```bash
 # compile the source code
-gcc vigenere.cpp -o vigenere
+g++ vigenere.cpp -o vigenere
 # run the executable with a file
 ./vigenere sometext.txt
 ```
