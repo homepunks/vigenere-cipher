@@ -2,8 +2,8 @@
 
 int main(int argc, char* argv[])
 {
-  if (argc < 2) {
-    std::cout << "Please, provide the input file for enciphering/deciphering as argument.\n";
+  if (argc != 2) {
+    std::cout << "Please, provide ONE input file for enciphering/deciphering as argument.\n";
     return 6969;
   }
 
@@ -25,9 +25,8 @@ int main(int argc, char* argv[])
   
   char choice = getchar();
   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  if ((choice >= 'a' && choice <= 'z') || (choice >= 'A' && choice <= 'Z')) {
+  if ((choice >= 'a' && choice <= 'z') || (choice >= 'A' && choice <= 'Z'))
     show_tabula_recta(tabula_recta);
-  }
   
   std::cout << "The Vigenère cipher was improved by Bellaso who added the concept of the secret keyword.\n";
   std::cout << "To enhance encryption, a keyword in a form of the whole string (no whitespaces) needed.\n";
