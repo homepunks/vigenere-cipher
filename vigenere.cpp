@@ -1,16 +1,14 @@
 #include "vigenere.h"
 
-void show_tabula_recta(char tabula_recta[SIZE][SIZE])
-{
-  for (int i = 0; i < SIZE; ++i) {
-    for (int j = 0; j < SIZE; ++j)
+void show_tabula_recta(const char tabula_recta[SIZE][SIZE]) {
+  for (size_t i = 0; i < SIZE; ++i) {
+    for (size_t j = 0; j < SIZE; ++j)
       std::cout << tabula_recta[j][i] << ' ';
     std::cout << '\n';
   }
 }
 
-std::string input_keyword()
-{
+std::string input_keyword() {
   std::string keyword;
   std::string input;
   std::getline(std::cin, input);
@@ -20,7 +18,8 @@ std::string input_keyword()
     else if (ch == ' ') {
       std::cout << "The keyword must be a no whitespaces string. Only the letters before the whitespace will be used.\n";
       break;
-    } else {
+    }
+    else {
       std::cout << "Non-alphabetical symbols cannot be used in the keyword. Only the letters before the symbol " << ch << " will be used.\n";
       break;
     }
@@ -29,17 +28,16 @@ std::string input_keyword()
   return keyword;
 }
 
-Mode select_mode(const std::string* keyword_ptr)
-{
+Mode select_mode(const std::string& keyword_ptr) {
   while (true) {
     char mode = getchar();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     if (mode == 'E' || mode == 'e') {
-      std::cout << "ENCRYPTION MODE SELECTED. YOUR FILE WILL BE ENCIPHERED USING THE KEYWORD " << *keyword_ptr << std::endl;
+      std::cout << "ENCRYPTION MODE SELECTED. YOUR FILE WILL BE ENCIPHERED USING THE KEYWORD " << keyword_ptr << std::endl;
       return ENCRYPT;
     }
     else if (mode == 'D' || mode == 'd') {
-      std::cout << "DECRYPTION MODE SELECTED. YOUR FILE WILL BE DECIPHERED USING THE KEYWORD " << *keyword_ptr << std::endl;
+      std::cout << "DECRYPTION MODE SELECTED. YOUR FILE WILL BE DECIPHERED USING THE KEYWORD " << keyword_ptr << std::endl;
       return DECRYPT;
     }
     else {
@@ -48,97 +46,87 @@ Mode select_mode(const std::string* keyword_ptr)
   }
 }
 
-void encrypt(std::ifstream& file, const std::string* keyword_ptr, char tabula_recta[SIZE][SIZE])
-{
-  std::ofstream encrypted_file("encrypted.txt");
-  if (!file) {
-    std::cerr << "ERROR CREATING OUTPUT FILE!\n";
-    return;
-  }
+void encrypt(std::ifstream& file, const std::string& keyword, const char tabula_recta[SIZE][SIZE]) {
+  if (!file.is_open()) 
+    throw std::runtime_error("INPUT FILE NOT OPEN!\n");
 
-  int* keyword = new int[keyword_ptr->length()];
-  for (int i = 0; i < keyword_ptr->length(); ++i)
-    *(keyword + i) = (*keyword_ptr)[i] - 'a';
+  std::ofstream encrypted_file("encrypted.txt");
+  if (!encrypted_file)
+    throw std::runtime_error("FAILED TO CREATE OUTPUT FILE!\n");
+
+  std::vector<int> keyword_indices;
+  keyword_indices.reserve(keyword.size());
+  for (char c : keyword)
+    keyword_indices.push_back(c - 'a');
+  if (keyword_indices.empty())
+    throw std::runtime_error("EMPTY KEYWORD!\n");
   
   char plain_letter;
-  int plain_number;
-  char encrypted_letter;
-  int operation = 0;
+  size_t operation = 0;
   
   while (file.get(plain_letter)) {
-    if ((plain_letter >= 'a' && plain_letter <= 'z') || (plain_letter >= 'A' && plain_letter <= 'Z')) {
-      if (plain_letter >= 'a' && plain_letter <= 'z') {
-	plain_number = plain_letter - 'a';
-      	encrypted_letter = tabula_recta[plain_number][*(keyword + operation)];
-	encrypted_file.put(encrypted_letter);
-      }
-      else if (plain_letter >= 'A' && plain_letter <= 'Z') {
-	plain_number = plain_letter - 'A';
-      	encrypted_letter = tabula_recta[plain_number][*(keyword + operation)];
-	encrypted_file.put(encrypted_letter + ('A' - 'a'));
-      }
+    if (std::isalpha(plain_letter)) {
+      const bool is_upper = std::isupper(plain_letter);
+      const int plain_number = std::tolower(plain_letter) - 'a';
 
-      ++operation;
-      if (operation == keyword_ptr->length())
-	operation = 0;
-    }
-    else {
+      char encrypted_letter = tabula_recta[plain_number][keyword_indices[operation]];
+      if (is_upper)
+	encrypted_letter = std::toupper(encrypted_letter);
+      encrypted_file.put(encrypted_letter);
+
+      operation = (operation + 1) % keyword_indices.size();
+    } else {
       encrypted_file.put(plain_letter);
     }
   }
-
-  delete[] keyword;
-  encrypted_file.close();
+  
   return;
 }
 
-
-void decrypt(std::ifstream& file, const std::string* keyword_ptr, char tabula_recta[SIZE][SIZE])
-{
-  std::ofstream decrypted_file("decrypted.txt");
-  if (!file) {
-    std::cerr << "ERROR CREATING OUTPUT FILE!\n";
-    return;
+void decrypt(std::ifstream& file, const std::string& keyword, const char tabula_recta[SIZE][SIZE]) {
+  if (!file.is_open()) {
+    throw std::runtime_error("INPUT FILE NOT OPEN\n");
   }
 
-  int* keyword = new int[keyword_ptr->length()];
-  for (int i = 0; i < keyword_ptr->length(); ++i)
-    *(keyword + i) = (*keyword_ptr)[i] - 'a';
-  
+  std::ofstream decrypted_file("decrypted.txt");
+  if (!decrypted_file)
+    throw std::runtime_error("FAILED TO CREATE OUTPUT FILE!\n");
+
+  std::vector<int> keyword_indices;
+  keyword_indices.reserve(keyword.size());
+  for (char c : keyword)
+    keyword_indices.push_back(c - 'a');
+  if (keyword_indices.empty())
+    throw std::runtime_error("EMPTY KEYWORD!\n");
+
   char cipher_letter;
-  int cipher_number;
-  char decrypted_letter;
-  int operation = 0;
-  
+  size_t operation = 0;
+
   while (file.get(cipher_letter)) {
-    if ((cipher_letter >= 'a' && cipher_letter <= 'z') || (cipher_letter >= 'A' && cipher_letter <= 'Z')) {
-      if (cipher_letter >= 'a' && cipher_letter <= 'z') {
-	cipher_number = cipher_letter - 'a';
-	for (int j = 0; j < SIZE; ++j) {
-	  if (tabula_recta[j][*(keyword + operation)] == cipher_letter)
-	    decrypted_file.put(tabula_recta[j][0]);
-	}
-      }
-      else if (cipher_letter >= 'A' && cipher_letter <= 'Z') {
-	cipher_letter = cipher_letter - 'A' + 'a';
-	cipher_number = cipher_letter - 'a';
-	for (int j = 0; j < SIZE; ++j) {
-	  if (tabula_recta[j][*(keyword + operation)] == cipher_letter)
-	    decrypted_file.put(tabula_recta[j][0] + ('A' - 'a'));
+    if (std::isalpha(cipher_letter)) {
+      const bool is_upper = std::isupper(cipher_letter);
+      const char lower_letter = std::tolower(cipher_letter);
+      const int key_index = keyword_indices[operation];
+
+      bool found = false;
+      for (size_t row = 0; row < SIZE; ++row) {
+	if (std::tolower(tabula_recta[row][key_index]) == lower_letter) {
+	  char decrypted = tabula_recta[row][0];
+	  decrypted_file.put(is_upper ? std::toupper(decrypted) : decrypted);
+	  
+	  found = true;
+	  break;
 	}
       }
       
-      ++operation;
-      if (operation == keyword_ptr->length())
-	operation = 0;
-    }
+      if (!found)
+	throw std::runtime_error("INVALID CHARACTER IN CIPHERTEXT!\n");
 
-    else {
+      operation = (operation + 1) % keyword_indices.size();
+    } else {
       decrypted_file.put(cipher_letter);
     }
   }
   
-  delete[] keyword;
-  decrypted_file.close();
   return;
 }

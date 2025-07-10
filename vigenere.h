@@ -7,18 +7,19 @@
 #include <limits>
 #include <fstream>
 #include <algorithm>
+#include <vector>
 
-#define SIZE 26
+constexpr size_t SIZE = 26;
 
 enum Mode {
   ENCRYPT,
   DECRYPT
 };
 
-void show_tabula_recta(char tabula_recta[SIZE][SIZE]);
+void show_tabula_recta(const char tabula_recta[SIZE][SIZE]);
 std::string input_keyword(void);
-Mode select_mode(const std::string* keyword_ptr);
-void encrypt(std::ifstream& file, const std::string* keyword_ptr, char tabula_recta[SIZE][SIZE]);
-void decrypt(std::ifstream& file, const std::string* keyword_ptr, char tabula_recta[SIZE][SIZE]);
+Mode select_mode(const std::string& keyword_ptr);
+void encrypt(std::ifstream& file, const std::string& keyword, const char tabula_recta[SIZE][SIZE]);
+void decrypt(std::ifstream& file, const std::string& keyword, const char tabula_recta[SIZE][SIZE]);
 
-#endif
+#endif /* VIGENERE_H_ */

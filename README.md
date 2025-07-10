@@ -1,10 +1,15 @@
 # The Vigenère cipher 
 One of the most widely known multi-alphabet ciphers, it was first created in 1553 by Giovan Battista Bellaso, though it is misattributed to 19th century cryptographer Blaise de Vigenère (Singh 2000).  
-Essentially, the Vigenère cipher uses the tabula recta (which can be displayed in your terminal, the program will offer this) with a keyword.
-The compiled executable requires one input file, otherwise it will terminate the program. During the runtime, the user will be prompted for a keyword which is the key to encryption/decryption process; then, the program will create an output file containing the enciphered/deciphered text.
-```bash
-# compile the source code
-clang++ vigenere.cpp main.cpp -o vigenere
-# run the executable with a file
-./vigenere sometext.txt
+The Vigenère cipher uses the tabula recta with a keyword.
+The compiled executable expects just one input text file, otherwise it exits. The mode and the keyword for encryption/decryption are prompted in the runtime. 
+
+## quickstart
+``` console
+make
+./vigenere example/t8.shakespeare.txt
+```
+
+In the ./examples/, you can find a showcase of successful encryption and following decryption of Shakespeare's work using keyword "helloworld".
+``` console
+diff ./examples/t8.shakespeare.txt ./decrypted.txt
 ```

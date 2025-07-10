@@ -15,8 +15,8 @@ int main(int argc, char* argv[])
   
   char abc[SIZE + 1] = "abcdefghijklmnopqrstuvwxyz";
   char tabula_recta[SIZE][SIZE];
-  for (int i = 0; i < SIZE; ++i)
-    for (int j = 0; j < SIZE; ++j)
+  for (size_t i = 0; i < SIZE; ++i)
+    for (size_t j = 0; j < SIZE; ++j)
       tabula_recta[j][i] = abc[(i + j) % SIZE];
 
   std::cout << "This program uses the Vigenère cipher to encrypt/decrypt the texts contained in text files.\n";
@@ -38,13 +38,13 @@ int main(int argc, char* argv[])
   std::cout << "The keyword that will be used is: " << keyword << std::endl;
   std::cout << "Now, select the mode. Press E to encrypt and D to decrypt the file.\n";
 
-  Mode mode = select_mode(&keyword); 
+  Mode mode = select_mode(keyword); 
   if (mode == ENCRYPT) {
-    encrypt(file, &keyword, tabula_recta);
+    encrypt(file, keyword, tabula_recta);
     std::cout << "The enciphered file encrypted.txt is ready!\n";
   }
   else if (mode == DECRYPT) {
-    decrypt(file, &keyword, tabula_recta);
+    decrypt(file, keyword, tabula_recta);
     std::cout << "The deciphered file decrypted.txt is ready!\n";
   }
  			       
