@@ -1,6 +1,6 @@
 #include "vigenere.h"
 
-void show_tabula_recta(const char tabula_recta[SIZE][SIZE]) {
+void show_tabula_recta(const char (&tabula_recta)[SIZE][SIZE]) {
   for (size_t i = 0; i < SIZE; ++i) {
     for (size_t j = 0; j < SIZE; ++j)
       std::cout << tabula_recta[j][i] << ' ';
@@ -28,16 +28,16 @@ std::string input_keyword() {
   return keyword;
 }
 
-Mode select_mode(const std::string& keyword_ptr) {
+Mode select_mode(const std::string& keyword) {
   while (true) {
     char mode = getchar();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     if (mode == 'E' || mode == 'e') {
-      std::cout << "ENCRYPTION MODE SELECTED. YOUR FILE WILL BE ENCIPHERED USING THE KEYWORD " << keyword_ptr << std::endl;
+      std::cout << "ENCRYPTION MODE SELECTED. YOUR FILE WILL BE ENCIPHERED USING THE KEYWORD " << keyword << std::endl;
       return ENCRYPT;
     }
     else if (mode == 'D' || mode == 'd') {
-      std::cout << "DECRYPTION MODE SELECTED. YOUR FILE WILL BE DECIPHERED USING THE KEYWORD " << keyword_ptr << std::endl;
+      std::cout << "DECRYPTION MODE SELECTED. YOUR FILE WILL BE DECIPHERED USING THE KEYWORD " << keyword << std::endl;
       return DECRYPT;
     }
     else {
@@ -46,7 +46,7 @@ Mode select_mode(const std::string& keyword_ptr) {
   }
 }
 
-void encrypt(std::ifstream& file, const std::string& keyword, const char tabula_recta[SIZE][SIZE]) {
+void encrypt(std::ifstream& file, const std::string& keyword, const char (&tabula_recta)[SIZE][SIZE]) {
   if (!file.is_open()) 
     throw std::runtime_error("INPUT FILE NOT OPEN!\n");
 
@@ -83,7 +83,7 @@ void encrypt(std::ifstream& file, const std::string& keyword, const char tabula_
   return;
 }
 
-void decrypt(std::ifstream& file, const std::string& keyword, const char tabula_recta[SIZE][SIZE]) {
+void decrypt(std::ifstream& file, const std::string& keyword, const char (&tabula_recta)[SIZE][SIZE]) {
   if (!file.is_open()) {
     throw std::runtime_error("INPUT FILE NOT OPEN\n");
   }

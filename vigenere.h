@@ -16,10 +16,10 @@ enum Mode {
   DECRYPT
 };
 
-void show_tabula_recta(const char tabula_recta[SIZE][SIZE]);
+void show_tabula_recta(const char (&tabula_recta)[SIZE][SIZE]);
 std::string input_keyword(void);
-Mode select_mode(const std::string& keyword_ptr);
-void encrypt(std::ifstream& file, const std::string& keyword, const char tabula_recta[SIZE][SIZE]);
-void decrypt(std::ifstream& file, const std::string& keyword, const char tabula_recta[SIZE][SIZE]);
+Mode select_mode(const std::string& keyword);
+void encrypt(std::ifstream& file, const std::string& keyword, const char (&tabula_recta)[SIZE][SIZE]);
+void decrypt(std::ifstream& file, const std::string& keyword, const char (&tabula_recta)[SIZE][SIZE]);
 
 #endif /* VIGENERE_H_ */
