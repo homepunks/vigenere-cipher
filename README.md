@@ -6,7 +6,7 @@ The compiled executable expects just one input text file, otherwise it exits. Th
 ## Quickstart
 ``` console
 make
-./vigenere example/t8.shakespeare.txt
+./vigenere ./examples/t8.shakespeare.txt
 ```
 
 In the ./examples, you can find a showcase of successful encryption and following decryption of Shakespeare's work using keyword "helloworld".
