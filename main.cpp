@@ -1,6 +1,6 @@
 #include "vigenere.h"
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) try {
   if (argc != 2) {
     std::cout << "Please, provide ONE input file for enciphering/deciphering "
                  "as argument.\n";
@@ -54,4 +54,7 @@ int main(int argc, char* argv[]) {
 
   file.close();
   return 0;
+} catch (const std::exception& e) {
+  std::cerr << e.what();
+  return 69;
 }
